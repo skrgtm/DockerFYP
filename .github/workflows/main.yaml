@@ -36,6 +36,6 @@ jobs:
 
       - name: SSH into Google Cloud VM
         run: |
-          ssh -v np03cs4m210035@35.244.17.213 'sudo docker pull skrgtm/test_sportsmitra:latest && sudo docker stop test_sportsmitra_container && sudo docker rm test_sportsmitra_container && sudo docker run -d --name test_sportsmitra_container -p 80:8000 skrgtm/test_sportsmitra:latest'
+          ssh -v np03cs4m210035@35.244.17.213 'sudo docker pull skrgtm/test_sportsmitra:latest && sudo docker stop test_sportsmitra_container && sudo docker rm test_sportsmitra_container && sudo docker run -d --name test_sportsmitra_container -p 80:5000 skrgtm/test_sportsmitra:latest'
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
