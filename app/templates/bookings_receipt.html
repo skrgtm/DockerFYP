@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Receipt</title>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Additional styles -->
+    <style>
+        /* Add custom styles here */
+        .receipt {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .receipt-details {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="receipt">
+            <div class="receipt-header">
+                <h1>Booking Receipt</h1>
+            </div>
+            <hr>
+            <div class="receipt-details">
+                <p><strong>Name:</strong> {{ current_user.User }}</p>
+                <p><strong>Date:</strong> {{ datetime.now().date() }}</p>
+                <p><strong>Time:</strong> {{ datetime.now().time() }}</p>
+				
+                <p><strong>Amount:</strong> ${{ total_amount }}</p>
+            </div>
+            <hr>
+            <div class="receipt-bookings">
+                <h3>Bookings:</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Facility</th>
+                            <th>Activity</th>
+                            <th>Session Start</th>
+                            <th>Session End</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in receipt_bookings %}
+                            <tr>
+                                <td>{{ booking.id }}</td>
+                                <td>{{ booking.session.facility.Name }}</td>
+                                <td>{{ booking.activity.Activity_Name }}</td>
+                                <td>{{ booking.session.Start_time }}</td>
+                                <td>{{ booking.session.End_time }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery CDN (if needed) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

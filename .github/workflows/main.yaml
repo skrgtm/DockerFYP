@@ -1,0 +1,41 @@
+name: AUTO DEPLOYMENT SPORTSMITRA
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t skrgtm/test_sportsmitra:latest .
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker push skrgtm/test_sportsmitra:latest
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan 35.244.17.213 >> ~/.ssh/known_hosts
+
+      - name: SSH into Google Cloud VM
+        run: |
+          ssh -v np03cs4m210035@35.244.17.213 'sudo docker pull skrgtm/test_sportsmitra:latest && sudo docker stop test_sportsmitra_container && sudo docker rm test_sportsmitra_container && sudo docker run -d --name test_sportsmitra_container -p 80:8000 skrgtm/test_sportsmitra:latest'
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
