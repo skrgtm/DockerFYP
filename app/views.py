@@ -2292,7 +2292,6 @@ def update_user():
     if form.validate_on_submit():
         current_user.User = form.User.data
         current_user.set_password(form.password.data)
-        current_user.Email = form.email.data
         current_user.Mobile = form.mobile.data
 
         # Check if a new profile picture is provided
@@ -2317,6 +2316,9 @@ def update_user():
         form.User.data = current_user.User
         form.email.data = current_user.Email
         form.mobile.data = current_user.Mobile
+
+    # Disable the email field to prevent editing
+    form.email.render_kw = {'readonly': True}
 
     return render_template('update_user.html', title='Update Personal Information', form=form, User=current_user)
 
