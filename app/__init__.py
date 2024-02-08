@@ -33,8 +33,10 @@ stripe.api_key = 'sk_test_51Mii9fBqkMuCWI2NQ26DYOhEa34sJkp1Z55KZvEi5LwiQdltDi1hh
 #configuration for email
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'skrgtm2059@gmail.com'
-app.config['MAIL_PASSWORD'] = 'igatzyfmajkjfyun'
+# app.config['MAIL_USERNAME'] = 'skrgtm2059@gmail.com'
+# app.config['MAIL_PASSWORD'] = 'igatzyfmajkjfyun'
+app.config['MAIL_USERNAME'] = 'infosportsmitra001@gmail.com'
+app.config['MAIL_PASSWORD'] = 'xwqnqzxbvutesnei'
 
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
