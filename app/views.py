@@ -850,7 +850,7 @@ plans = {
     },
     '3_months': {
         'name': 'Gym Membership',
-        'price_id': 250,
+        'price_id': 300,
         'interval': '3 months',
         'currency': 'Rs'
     },
@@ -2071,6 +2071,8 @@ def checkout_page():
     total_amount = sum([item.Size * item.activity.Amount for item in data])
     grouped_data = defaultdict(list)
 
+    memberships = Membership.query.all()
+
     for item in data:
         grouped_data[item.session_id].append(item)
 
@@ -2090,7 +2092,7 @@ def checkout_page():
         discount = int(total_amount * 0.5)  # 50% discount for members
         total_amount = total_amount - discount  # Apply the member discount
 
-    return render_template('checkout_page.html', data=aggregated_data, total_amount=total_amount, discount=discount, User=current_user)
+    return render_template('checkout_page.html', data=aggregated_data, total_amount=total_amount, discount=discount, User=current_user, memberships=memberships)
 
 
 # Removes all expired bookings
@@ -2138,7 +2140,7 @@ def delete_booking(booking_id):
     session.Remaining_Cap += total_size
     db.session.commit()
 
-    flash('Booking has been deleted!', 'success')
+    # flash('Booking has been deleted!', 'success')
     return redirect(url_for('checkout_page'))
 
 

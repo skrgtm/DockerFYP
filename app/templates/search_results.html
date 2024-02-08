@@ -8,6 +8,7 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <title>Sportsmitra</title>
+    <link rel="icon" type="image/png" href="../static/images/fav.png" />
 
     <!-- Bootstrap CSS -->
     <link href="../static/css/animate.css" rel="stylesheet" />
@@ -29,7 +30,7 @@
   <body>
     <!-- <div class="container-fluid pl-0 pr-0 bg-img clearfix parallax-window2" data-parallax="scroll" data-image-src="../static/images/banner2.jpg"> -->
     <nav class="navbar navbar-expand-md navbar-dark">
-      <div class="container" style="padding-top: 15px;">
+      <div class="container" style="padding-top: 15px">
         <!-- Brand -->
         <a class="navbar-brand mr-auto" href="/"
           ><img src="../static/images/nb.png" alt="Sportsmitra" class="logo"
@@ -49,22 +50,61 @@
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item"><a class="nav-link" href="/user">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="/lookup_venue">Book Sessions</a></li>
-            <li class="nav-item"><a class="nav-link" href="/my_bookings">Your Bookings</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('order_subscription', username=current_user.User) }}">Membership</a></li>
-            <li class="nav-item"><a class="nav-link" href="/checkout_page">Checkout</a></li>
-            <!-- <li class="nav-item"><a class="nav-link" href="/refund_form">Dispute Request</a></li> -->
-            <li class="nav-item"><a class="nav-link" href="#" id="logout">Logout</a></li>
             <li class="nav-item">
-              <a class="nav-link" href="/update_user" style="display: flex; align-items: center; margin-left: 130px; text-decoration: none; color: #333;">
-                <img src="../static/images/acc.jpg" alt="User Account" style="width: 36px; height: 36px; border-radius: 50%; margin-right: 12px; border: 2px solid #007bff;"/>
+              <a class="nav-link" href="/lookup_venue">Book Sessions</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/my_bookings">Your Bookings</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{{ url_for('order_subscription', username=current_user.User) }}"
+                >Membership</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/checkout_page">Checkout</a>
+            </li>
+            <!-- <li class="nav-item"><a class="nav-link" href="/refund_form">Dispute Request</a></li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="logout">Logout</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="/update_user"
+                style="
+                  display: flex;
+                  align-items: center;
+                  margin-left: 130px;
+                  text-decoration: none;
+                  color: #333;
+                "
+              >
+                <img
+                  src="../static/images/acc.jpg"
+                  alt="User Account"
+                  style="
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    margin-right: 12px;
+                    border: 2px solid #007bff;
+                  "
+                />
                 <div>
-                  <span style="font-weight: bold; font-size: 16px; display: block;">{{User.User}}</span>
-                  <span style="font-size: 14px; display: block; color: #777;">Account</span>
+                  <span
+                    style="font-weight: bold; font-size: 16px; display: block"
+                    >{{User.User}}</span
+                  >
+                  <span style="font-size: 14px; display: block; color: #777"
+                    >Account</span
+                  >
                 </div>
               </a>
             </li>
-        </ul>
+          </ul>
         </div>
       </div>
     </nav>
@@ -77,8 +117,16 @@
 
     <div class="w-full flex items-center justify-center px-4">
       <div class="max-w-md w-full">
-        <div class="bg-white p-8 rounded-lg shadow-lg" style="border: 4px solid #df6700;">
-          <form class="form-signin" method="POST" name="signin" onsubmit="return validateForm()">
+        <div
+          class="bg-white p-8 rounded-lg shadow-lg"
+          style="border: 4px solid #df6700"
+        >
+          <form
+            class="form-signin"
+            method="POST"
+            name="signin"
+            onsubmit="return validateForm()"
+          >
             {{ form.hidden_tag() }}
             <h1 class="h3 mb-3" style="text-align: center; font-weight: bold">
               BOOK SESSIONS
@@ -134,6 +182,7 @@
               </label>
               {{form.size(class_="form-control", id="group_size")}} {{
               form.activity_id(class_="form-control", id="activity_id") }}
+              <span id="group_size_error" class="text-danger"></span>
             </div>
 
             <button
@@ -175,8 +224,13 @@
         //     document.getElementById("booknow").addEventListener("click", function() {
         //     window.location.href = document.getElementById("booknow").getAttribute("href");
         // });
+        
       });
     </script>
+    
+
+
+
     <br />
     <br />
     <footer class="container-fluid">
@@ -244,31 +298,6 @@
         </div>
       </div>
     </footer>
-
-    <script>
-      function validateForm() {
-          var facilitySelect = document.getElementById("facility_name");
-          var groupSizeInput = document.getElementById("group_size");
-  
-          // Get the selected facility
-          var selectedFacility = facilitySelect.value;
-  
-          // Check if the selected facility requires a minimum group size of 10
-          if (selectedFacility === "Futsal 1" || selectedFacility === "Futsal 2") {
-              var groupSize = parseInt(groupSizeInput.value);
-  
-              // Check if group size is less than 10
-              if (groupSize < 10) {
-                  alert("Group size must be equal to or more than 10 for selected facility.");
-                  return false; // Prevent form submission
-              }
-          }
-  
-          // Proceed with form submission
-          return true;
-      }
-  </script>
-  
 
     <script>
       document.getElementById("logout").addEventListener("click", function (e) {
