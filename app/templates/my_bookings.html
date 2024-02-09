@@ -26,11 +26,17 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css"
     />
+
+    <style>
+      .table-responsive .table {
+        background-color: white;
+      }
+    </style>
   </head>
   <body>
     <!-- <div class="container-fluid pl-0 pr-0 bg-img clearfix parallax-window2" data-parallax="scroll" data-image-src="../static/images/banner2.jpg"> -->
     <nav class="navbar navbar-expand-md navbar-dark">
-      <div class="container" style="padding-top: 15px;">
+      <div class="container" style="padding-top: 15px">
         <!-- Brand -->
         <a class="navbar-brand mr-auto" href="/"
           ><img src="../static/images/nb.png" alt="Sportsmitra" class="logo"
@@ -50,103 +56,144 @@
         <div class="collapse navbar-collapse" id="collapsibleNavbar">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item"><a class="nav-link" href="/user">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="/lookup_venue">Book Sessions</a></li>
-            <li class="nav-item"><a class="nav-link" href="/my_bookings">Your Bookings</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('order_subscription', username=current_user.User) }}">Membership</a></li>
-            <li class="nav-item"><a class="nav-link" href="/checkout_page">Checkout</a></li>
-            <!-- <li class="nav-item"><a class="nav-link" href="/refund_form">Dispute Request</a></li> -->
-            <li class="nav-item"><a class="nav-link" href="#" id="logout">Logout</a></li>
             <li class="nav-item">
-              <a class="nav-link" href="/update_user" style="display: flex; align-items: center; margin-left: 130px; text-decoration: none; color: #333;">
-                <img src="../static/images/acc.jpg" alt="User Account" style="width: 36px; height: 36px; border-radius: 50%; margin-right: 12px; border: 2px solid #007bff;"/>
+              <a class="nav-link" href="/lookup_venue">Book Sessions</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/my_bookings">Your Bookings</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="{{ url_for('order_subscription', username=current_user.User) }}"
+                >Membership</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/checkout_page">Checkout</a>
+            </li>
+            <!-- <li class="nav-item"><a class="nav-link" href="/refund_form">Dispute Request</a></li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="logout">Logout</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                href="/update_user"
+                style="
+                  display: flex;
+                  align-items: center;
+                  margin-left: 130px;
+                  text-decoration: none;
+                  color: #333;
+                "
+              >
+                <img
+                  src="../static/images/acc.jpg"
+                  alt="User Account"
+                  style="
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    margin-right: 12px;
+                    border: 2px solid #007bff;
+                  "
+                />
                 <div>
-                  <span style="font-weight: bold; font-size: 16px; display: block;">{{User.User}}</span>
-                  <span style="font-size: 14px; display: block; color: #777;">Account</span>
+                  <span
+                    style="font-weight: bold; font-size: 16px; display: block"
+                    >{{User.User}}</span
+                  >
+                  <span style="font-size: 14px; display: block; color: #777"
+                    >Account</span
+                  >
                 </div>
               </a>
             </li>
-        </ul>
+          </ul>
         </div>
       </div>
     </nav>
     <!-- </div> -->
     <br />
     <br />
-    <br />
-
-    <div class="w-full flex items-center justify-center px-4">
-      <div class="max-w-screen-xl">
-        <div class="bg-white p-8 rounded-lg shadow-lg" style="border: 4px solid #df6700;">
-          
-          {% with messages = get_flashed_messages() %} {% if messages %} {% for
-          message in messages %} {% endfor %} {% endif %} {% endwith %} {% if
-          bookings %}
-          <b><h1 class="h3 mb-3 font-weight-normal">YOUR BOOKINGS</h1></b>
-          <!-- <div class="table-responsive"> -->
-            <table class="table table-hover w-full">
-              <thead>
-                <tr>
-                  <th>Facility</th>
-                  <th>Activity</th>
-                  <th>Booked Date</th>
-                  <th>Start Time</th>
-                  <th>End Time</th>
-                  <th>Number of People</th>
-                  <th>Amount</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for item in bookings %}
-                <tr>
-                  <td>{{ item.session.facility.Name }}</td>
-                  <td>{{ item.activity.Activity_Name }}</td>
-                  <td>{{ item.Book_Time }}</td>
-                  <td>{{ item.session.Start_time }}</td>
-                  <td>{{ item.session.End_time }}</td>
-                  <td>{{ item.Size }}</td>
-                  <td>Rs {{ item.Size * item.activity.Amount }}</td>
-                  <td>{{ item.Status }}</td>
-                  <td>
-                    {% if item.Book_Time > current_time %}
-                    <button type="button" class="btn btn-custom cancel-booking-btn" data-booking-id="{{ item.id }}">
-                      Cancel
-                    </button>
-                    {% endif %}
-                  </td>
-                </tr>
-                {% endfor %}
-                
-            </table>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              {% for category, message in messages %}
-                <div id="flash-message" class="alert alert-{{ category }}">
-                  <p style="color: black">{{ message }}</p>
-                </div>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
+    <!-- <br /> -->
+    <div class="container mt-5">
+      {% with messages = get_flashed_messages() %} {% if messages %} {% for
+      message in messages %} {% endfor %} {% endif %} {% endwith %} {% if
+      bookings %}
+      <div class="table-responsive">
+        <table class="table table-hover" style="border: 4px solid #df6700">
+          <!-- <b><h1 class="h3 mb-3 font-weight-normal">YOUR BOOKINGS</h1></b> -->
+          <thead>
+            <tr>
+              <th colspan="9" style="background-color: white">
+                <h1 class="h3 mb-3 font-bold">YOUR BOOKINGS</h1>
+              </th>
+            </tr>
+            <tr>
+              <th>Facility</th>
+              <th>Activity</th>
+              <th>Booked Date</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Number of People</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in bookings %}
+            <tr>
+              <td>{{ item.session.facility.Name }}</td>
+              <td>{{ item.activity.Activity_Name }}</td>
+              <td>{{ item.Book_Time }}</td>
+              <td>{{ item.session.Start_time }}</td>
+              <td>{{ item.session.End_time }}</td>
+              <td>{{ item.Size }}</td>
+              <td>Rs {{ item.Size * item.activity.Amount }}</td>
+              <td>{{ item.Status }}</td>
+              <td>
+                {% if item.Book_Time > current_time %}
+                <button
+                  type="button"
+                  class="btn btn-custom cancel-booking-btn"
+                  data-booking-id="{{ item.id }}"
+                >
+                  Cancel
+                </button>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
           </tbody>
-          </div>
-        </div>
+        </table>
       </div>
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        id="flash-message"
+        class="alert alert-{{ category }}"
+        style="background-color: black"
+      >
+        <p style="color: whitesmoke">{{ message }}</p>
+      </div>
+      {% endfor %} {% endif %} {% endwith %} {% else %}
+      <div class="text-center">
+        <b><h1 class="custom-text">You Have No Bookings Currently</h1></b>
+        <b
+          ><h1 class="custom-text">
+            Please Book a Session or Check if you have Paid the Booking.
+          </h1></b
+        >
+      </div>
+      {% endif %}
+      <br />
+      <br />
+      <br />
     </div>
-    {% else %}
-    <b
-      ><h1 align="center" class="custom-text" style="color: black;">
-        You Have No Bookings Currently
-      </h1></b
-    ><br />
-    <b
-      ><h1 align="center" class="custom-text" style="color: black;">
-        Pls Book a Session or Check if you have Paid the Booking.
-      </h1></b
-    >
-    {% endif %}
-    <br />
-    <br />
+
     <footer class="container-fluid">
       <div class="container">
         <div class="row">
@@ -207,23 +254,20 @@
             <h5>PHONE</h5>
             <p>9818255262</p>
             <h5>EMAIL</h5>
-            <p>sportsmitra@gmail.com</p>
+            <p>infosportsmitra001@gmail.com</p>
           </div>
         </div>
       </div>
     </footer>
-    
-  
-
 
     <script>
       // Automatically hide the flash message after 5 seconds
-      document.addEventListener('DOMContentLoaded', function () {
-        const flashMessage = document.getElementById('flash-message');
-        
+      document.addEventListener("DOMContentLoaded", function () {
+        const flashMessage = document.getElementById("flash-message");
+
         if (flashMessage) {
           setTimeout(function () {
-            flashMessage.style.display = 'none';
+            flashMessage.style.display = "none";
           }, 5000); // 5000 milliseconds = 5 seconds
         }
       });
@@ -231,22 +275,22 @@
 
     <script>
       // Add a click event listener to the cancel booking buttons
-      document.addEventListener('DOMContentLoaded', function () {
-        const cancelButtons = document.querySelectorAll('.cancel-booking-btn');
-        
+      document.addEventListener("DOMContentLoaded", function () {
+        const cancelButtons = document.querySelectorAll(".cancel-booking-btn");
+
         cancelButtons.forEach(function (button) {
-          button.addEventListener('click', function (event) {
-            const bookingId = event.target.getAttribute('data-booking-id');
-            
+          button.addEventListener("click", function (event) {
+            const bookingId = event.target.getAttribute("data-booking-id");
+
             // Display SweetAlert confirmation
             Swal.fire({
-              title: 'Are you sure?',
-              text: 'This action cannot be undone!',
-              icon: 'warning',
+              title: "Are you sure?",
+              text: "This action cannot be undone!",
+              icon: "warning",
               showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, cancel it!'
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, cancel it!",
             }).then((result) => {
               // If user confirms the action
               if (result.isConfirmed) {
@@ -258,7 +302,6 @@
         });
       });
     </script>
-
 
     <script>
       document.getElementById("logout").addEventListener("click", function (e) {
@@ -279,8 +322,6 @@
           }
         });
       });
-
-      
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../static/javascript/jquery.min.js"></script>
@@ -289,6 +330,5 @@
     <script src="../static/javascript/wow.js"></script>
     <script src="../static/javascript/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
   </body>
 </html>

@@ -275,9 +275,7 @@
             <h5>PHONE</h5>
             <p>9818255262</p>
             <h5>EMAIL</h5>
-            <p>sportsmitra@gmail.com</p>
-            
-            
+            <p>infosportsmitra001@gmail.com</p>
           </div>
         </div>
       </div>
@@ -306,7 +304,7 @@
     <script>
       document.getElementById("logout").addEventListener("click", function (e) {
         e.preventDefault(); // Prevents the default link behavior
-    
+
         Swal.fire({
           title: "Are you sure?",
           text: "Do you want to logout?",
@@ -319,7 +317,7 @@
           if (result.isConfirmed) {
             // Set flag in localStorage indicating successful logout
             localStorage.setItem("logoutStatus", "success");
-    
+
             // Redirect to logout URL
             window.location.href = "/logout";
           }
