@@ -15,6 +15,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css">
 </head>
 <body>
+  <!-- Preloader -->
+  <div class="preloader">
+    <img src="../static/images/bload.gif" alt="Loading..." class="loader-gif">
+  </div>
+
+
 <nav class="navbar navbar-expand-md navbar-dark">
     <div class="container"> 
         <!-- Brand --> 
@@ -394,6 +400,12 @@
         </div>
       </div>
     </footer>
+    <script>
+      // When all content (including images) is loaded, remove preloader
+      window.addEventListener("load", function () {
+        document.body.classList.add("loaded");
+      });
+    </script>
     <script>
       document.getElementById("logout").addEventListener("click", function (e) {
         e.preventDefault(); // Prevents the default link behavior

@@ -35,6 +35,10 @@
     </style>
   </head>
   <body>
+    <!-- Preloader -->
+    <div class="preloader">
+      <img src="../static/images/bload.gif" alt="Loading..." class="loader-gif">
+    </div>
     <nav class="navbar navbar-expand-md navbar-dark">
       <div class="container" style="padding-top: 15px">
         <!-- Brand -->
@@ -259,6 +263,12 @@
             window.location.href = "/logout";
           }
         });
+      });
+    </script>
+    <script>
+      // When all content (including images) is loaded, remove preloader
+      window.addEventListener("load", function () {
+        document.body.classList.add("loaded");
       });
     </script>
     <script src="../static/javascript/parallax.js"></script>

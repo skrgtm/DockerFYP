@@ -15,6 +15,10 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css">
 </head>
 <body class="align-content-center">
+  <!-- Preloader -->
+  <div class="preloader">
+    <img src="../static/images/bload.gif" alt="Loading..." class="loader-gif">
+  </div>
 <nav class="navbar navbar-expand-md navbar-dark">
   <div class="container" style="padding-top: 15px;">
     <a class="navbar-brand mr-auto" href="/"><img src="../static/images/nb.png" alt="Sportsmitra" class="logo"/></a>
@@ -298,6 +302,12 @@
         window.location.href = "/logout";
       }
     });
+  });
+</script>
+<script>
+  // When all content (including images) is loaded, remove preloader
+  window.addEventListener("load", function () {
+    document.body.classList.add("loaded");
   });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

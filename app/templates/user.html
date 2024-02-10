@@ -38,6 +38,10 @@
     <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
   </head>
   <body>
+    <!-- Preloader -->
+    <div class="preloader">
+      <img src="../static/images/bload.gif" alt="Loading..." class="loader-gif">
+    </div>
     <div
       class="container-fluid pl-0 pr-0 bg-img clearfix parallax-window2"
       data-parallax="scroll"
@@ -322,6 +326,12 @@
             window.location.href = "/logout";
           }
         });
+      });
+    </script>
+    <script>
+      // When all content (including images) is loaded, remove preloader
+      window.addEventListener("load", function () {
+        document.body.classList.add("loaded");
       });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

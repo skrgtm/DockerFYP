@@ -27,6 +27,10 @@
     <link rel="icon" type="image/png" href="../static/images/fav.png" />
   </head>
   <body>
+    <!-- Preloader -->
+    <div class="preloader">
+      <img src="../static/images/bload.gif" alt="Loading..." class="loader-gif">
+    </div>
     <!-- <div class="container-fluid pl-0 pr-0 bg-img clearfix parallax-window2" data-parallax="scroll" data-image-src="../static/images/banner2.jpg"> -->
     <nav class="navbar navbar-expand-md navbar-dark">
       <div class="container" style="padding-top: 15px">
@@ -213,6 +217,12 @@
         } else {
           passwordField.type = "password";
         }
+      });
+    </script>
+    <script>
+      // When all content (including images) is loaded, remove preloader
+      window.addEventListener("load", function () {
+        document.body.classList.add("loaded");
       });
     </script>
 

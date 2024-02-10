@@ -18,6 +18,10 @@
       
     </head>
     <body class=" text-center">
+      <!-- Preloader -->
+    <div class="preloader">
+      <img src="../static/images/bload.gif" alt="Loading..." class="loader-gif">
+    </div>
      
 
 <!-- <div class="container-fluid pl-0 pr-0 bg-img clearfix parallax-window2" data-parallax="scroll" data-image-src="../static/images/banner2.jpg"> -->
@@ -229,6 +233,12 @@
       </div>
     </div>
   </footer>
+  <script>
+    // When all content (including images) is loaded, remove preloader
+    window.addEventListener("load", function () {
+      document.body.classList.add("loaded");
+    });
+  </script>
   <script>
     $(document).ready(function () {
       $(".toggle-password").click(function () {

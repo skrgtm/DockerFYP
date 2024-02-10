@@ -459,10 +459,37 @@ footer::before {
 }
 
 .flash-messages p {
-  color: black
+  color: black;
 }
 
 .nav-item {
   flex: 0 0 auto; /* This ensures the item won't grow or shrink */
   margin-right: 10px; /* Adjust this value for the desired right gap */
+}
+
+/* Preloader styles */
+/* Preloader styles */
+/* Preloader styles */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw; /* Use viewport width */
+  height: 100vh; /* Use viewport height */
+  background-color: black; /* Change background color as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Ensure preloader appears on top */
+}
+
+.loader {
+  /* Use the background image property to display the loading GIF */
+  background-image: url('../static/images/load.gif');
+  background-size: cover; /* Adjust as needed */
+}
+
+/* Hide preloader when content is loaded */
+body.loaded .preloader {
+  display: none;
 }
