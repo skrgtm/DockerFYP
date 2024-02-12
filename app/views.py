@@ -627,14 +627,7 @@ def order_products():
         return jsonify({'error': 'Payment initiation failed', 'message': response.text}), response.status_code
 
 
-# Define the validate_session function
-# def validate_session():
-#     if current_user.is_authenticated:
-#         # User is logged in, session is active
-#         return True
-#     else:
-#         # User is not logged in or session expired
-#         return False
+
 
 # khalti payment success
 # Handles success for user bookings.
@@ -887,6 +880,8 @@ def subscription_success():
 
     # Extract membership_type from the query parameters
     membership_type = request.args.get('membership_type')
+    # membership_type = request.args.get('plan_id')
+    print("Membership type:", membership_type)
 
     if membership_type:
         membership_type = membership_type.split('?')[0]
@@ -932,6 +927,7 @@ def subscription_success():
     return 'Membership type not specified', 400
 
 
+# *********************************************************************************
 @app.route('/order_subscription/<string:username>', methods=['GET', 'POST'])
 @login_required
 @require_role(role="User")
@@ -946,6 +942,7 @@ def order_subscription(username):
 
     if request.method == 'POST':
         plan_id = request.form.get('plan_id')
+
         selected_plan = plans.get(plan_id)
 
         if selected_plan:
@@ -953,8 +950,13 @@ def order_subscription(username):
             amount_paisa = int(amount * 100)
 
             # Modify the return_url to include the membership_type as a query parameter
-            return_url = url_for('subscription_success',
-                                 _external=True) + f"?membership_type={plan_id}"
+            # return_url = url_for('subscription_success',
+            #                      _external=True) + f"?membership_type={plan_id}"
+
+            return_url = url_for('subscription_success', _external=True) + f"?membership_type={plan_id}&payment_type=subscription"
+
+
+            print("Plan ID:", plan_id)
 
             payload = json.dumps({
                 "return_url": return_url,
@@ -991,76 +993,15 @@ def order_subscription(username):
 
     return render_template('all_subscriptions.html', username=username, plans=plans, current_user=user, memberships=memberships, User=current_user)
 
-# ************************************************************************************
-# @app.route('/manorder_subscription/<string:username>', methods=['GET', 'POST'])
-# @login_required
-# @require_role(role="User")
-# def manorder_subscription(username):
-#     user = UserAccount.query.filter_by(User=username).first()
-#     c_user = user.User
 
-#     if (user.Member == True):
-#         print("Is a member")
-#     else:
-#         print("Nope")
 
-#     if user is None:
-#         abort(404, f"No user found with username: {username}")
-
-#     if request.method == 'POST':
-
-#         plan_id = request.form.get('plan_id')
-
-#         selected_plan = Membership.query.filter_by(id=plan_id).first()
-
-#         if selected_plan:
-#             amount = selected_plan.price
-#             amount_paisa = int(amount * 100)
-
-#             # Modify the return_url to include the membership_type as a query parameter
-#             return_url = url_for('subscription_success',
-#                                  _external=True) + f"?membership_type={plan_id}"
-
-#             payload = json.dumps({
-#                 "return_url": return_url,
-#                 "website_url": "http://localhost:5000",
-#                 "amount": amount_paisa,
-#                 "purchase_order_id": "Order01",
-#                 "purchase_order_name": "Member"
-#                 # Add other fields as needed
-#             })
-
-#             headers = {
-#                 'Authorization': 'key b42caed1ffbd4202b41b700a32e3a237',
-#                 'Content-Type': 'application/json',
-#             }
-
-#             response = requests.post(
-#                 "https://a.khalti.com/api/v2/epayment/initiate/", headers=headers, data=payload)
-
-#             if response.status_code == 200:
-#                 response_data = response.json()
-#                 return redirect(response_data['payment_url'])
-#             else:
-#                 app.logger.error(
-#                     f"Failed to initiate payment: {response.text}")
-#                 return jsonify({'error': 'Payment initiation failed', 'message': response.text}), response.status_code
-
-#     # Fetch all available membership plans from the database
+# # Route to display all membership types
+# @app.route('/display_memberships')
+# def display_memberships():
+#     # Retrieve all memberships from the database
 #     memberships = Membership.query.all()
-
-#     return render_template('all_subscriptions.html', username=username, memberships=memberships, current_user=c_user)
-
-
-# **********************************************************************************
-
-# Route to display all membership types
-@app.route('/display_memberships')
-def display_memberships():
-    # Retrieve all memberships from the database
-    memberships = Membership.query.all()
-    # print(memberships)
-    return render_template('all_subscriptions.html', memberships=memberships)
+#     # print(memberships)
+#     return render_template('all_subscriptions.html', memberships=memberships)
 
 # *************************************************************************************************************
 # Route to allow users to cancel their membership
@@ -1110,14 +1051,18 @@ def success():
         username = request.args.get('username')
         user = UserAccount.query.filter_by(User=username).first()
         if user:
-            plan_id = request.args.get('plan_id')
-            plan = plans.get(plan_id)
+            membership_type = request.args.get('membership_type')
+            plan = plans.get(membership_type)
 
             if plan:
                 # Set membership start and end dates based on the subscription plan
                 start_date = datetime.utcnow().date()
                 if plan['interval'] == 'month':
                     end_date = start_date + relativedelta(months=1)
+                elif plan['interval'] == '3 months':
+                    end_date = start_date + relativedelta(months=3)
+                elif plan['interval'] == '6 months':
+                    end_date = start_date + relativedelta(months=6)
                 elif plan['interval'] == 'year':
                     end_date = start_date + relativedelta(years=1)
                 else:

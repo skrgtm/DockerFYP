@@ -221,10 +221,12 @@
       });
     });
   </script>
-  <!-- Preloader -->
-  <div class="preloader">
-    <img src="../static/images/bload.gif" alt="Loading..." class="loader-gif">
-  </div>
+  <script>
+    // When all content (including images) is loaded, remove preloader
+    window.addEventListener("load", function () {
+      document.body.classList.add("loaded");
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
            
   <script src="../static/javascript/jquery.min.js"></script>
