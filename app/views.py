@@ -1563,66 +1563,67 @@ def look_bookings():
 # **********************************************************************************************************
 # Route which handle booking modification
 # The booking id is taken in as a parameter.
+# employee for viewing book session user
 
-# @app.route('/edit_booking/<int:booking_id>', methods=['GET', 'POST'])
-# @require_role(role="Employee")
-# @login_required
-# def edit_booking(booking_id):
-#     booking = Booking.query.get(booking_id)
-#     print(booking)  # Get the booking by its ID
+@app.route('/edit_booking/<int:booking_id>', methods=['GET', 'POST'])
+@require_role(role="Employee")
+@login_required
+def edit_booking(booking_id):
+    booking = Booking.query.get(booking_id)
+    print(booking)  # Get the booking by its ID
 
-#     if not booking:
-#         flash('Booking not found', 'danger')
-#         return redirect(url_for('look_bookings'))
+    if not booking:
+        flash('Booking not found', 'danger')
+        return redirect(url_for('look_bookings'))
 
-#     if booking.Status != "Booked":
-#         flash('Booking cannot be edited because it has already occurred', 'danger')
-#         return redirect(url_for('look_bookings'))
+    if booking.Status != "Booked":
+        flash('Booking cannot be edited because it has already occurred', 'danger')
+        return redirect(url_for('look_bookings'))
 
-#     form = EditBookingForm(obj=booking)
+    form = EditBookingForm(obj=booking)
 
-#     if request.method == 'POST' and form.validate_on_submit():
-#         if form.cancel.data:  # Check if the cancel button was clicked
-#             booking_sessionFilter = Sessions.query.filter_by(
-#                 Start_time=form.start_time.data, End_time=form.end_time.data).first()
-#             print(booking_sessionFilter)
-#             booking_filter = Booking.query.filter_by(
-#                 Book_Time=form.date.data, session=booking_sessionFilter.id).first()
-#             if not booking_filter and booking_sessionFilter:
-#                 flash('No Booking Found to Cancel.')
-#             else:
-#                 booking.Status = "Cancelled"
-#                 booking.session.Remaining_Cap += booking.Size  # Increase the remaining capacity
-#                 flash('Booking cancelled successfully', 'success')
-#         else:
-#             old_session = booking.session
-#             new_session = Sessions.query.filter_by(
-#                 Date=form.date.data, Start_time=form.start_time.data, End_time=form.end_time.data).first()
-#             print(new_session)
+    if request.method == 'POST' and form.validate_on_submit():
+        if form.cancel.data:  # Check if the cancel button was clicked
+            booking_sessionFilter = Sessions.query.filter_by(
+                Start_time=form.start_time.data, End_time=form.end_time.data).first()
+            print(booking_sessionFilter)
+            booking_filter = Booking.query.filter_by(
+                Book_Time=form.date.data, session=booking_sessionFilter.id).first()
+            if not booking_filter and booking_sessionFilter:
+                flash('No Booking Found to Cancel.')
+            else:
+                booking.Status = "Cancelled"
+                booking.session.Remaining_Cap += booking.Size  # Increase the remaining capacity
+                flash('Booking cancelled successfully', 'success')
+        else:
+            old_session = booking.session
+            new_session = Sessions.query.filter_by(
+                Date=form.date.data, Start_time=form.start_time.data, End_time=form.end_time.data).first()
+            print(new_session)
 
-#             if not new_session:
-#                 flash('No session found for the new date and time', 'danger')
-#                 return render_template('edit_booking.html', form=form, booking_id=booking_id)
+            if not new_session:
+                flash('No session found for the new date and time', 'danger')
+                return render_template('edit_booking.html', form=form, booking_id=booking_id)
 
-#             if new_session.Remaining_Cap < booking.Size:
-#                 flash('Not enough capacity for the new session', 'danger')
-#                 return render_template('edit_booking.html', form=form, booking_id=booking_id)
+            if new_session.Remaining_Cap < booking.Size:
+                flash('Not enough capacity for the new session', 'danger')
+                return render_template('edit_booking.html', form=form, booking_id=booking_id)
 
-#             # Update the remaining capacities
-#             old_session.Remaining_Cap += booking.Size
-#             new_session.Remaining_Cap -= booking.Size
+            # Update the remaining capacities
+            old_session.Remaining_Cap += booking.Size
+            new_session.Remaining_Cap -= booking.Size
 
-#             # Update the booking
-#             booking.session_id = new_session.id
-#             booking.session = new_session
-#             db.session.add(old_session)
-#             db.session.add(new_session)
-#             flash('Booking updated successfully', 'success')
+            # Update the booking
+            booking.session_id = new_session.id
+            booking.session = new_session
+            db.session.add(old_session)
+            db.session.add(new_session)
+            flash('Booking updated successfully', 'success')
 
-#         db.session.commit()
-#         return redirect(url_for('look_bookings'))
+        db.session.commit()
+        return redirect(url_for('look_bookings'))
 
-#     return render_template('edit_booking.html', form=form, booking_id=booking_id, booking=booking)
+    return render_template('edit_booking.html', form=form, booking_id=booking_id, booking=booking)
 # ********************************************************************************************************************
 
 # Route that takes in the user account to check membership information

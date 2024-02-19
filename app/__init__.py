@@ -27,8 +27,7 @@ app.config['RECAPTCHA_PUBLIC_KEY']='6LfIW4UkAAAAACk9Wog68aHpKSpvUHSjmvXOAo_p'
 app.config['RECAPTCHA_PRIVATE_KEY']='6LfIW4UkAAAAADqnSWXE-h6dlvd96D7saDY3X4ua'
 app.config['RECAPTCHA_OPTIONS']= {'theme':'black'}
 
-#srtipe key
-stripe.api_key = 'sk_test_51Mii9fBqkMuCWI2NQ26DYOhEa34sJkp1Z55KZvEi5LwiQdltDi1hhMSSi54aRRohIItyssYimBg0iWkaiiuL1DdK00aUnCdyDv'
+
 
 #configuration for email
 app.config['MAIL_SERVER']='smtp.gmail.com'
