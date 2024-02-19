@@ -1,7 +1,7 @@
 # Relevant modules for the project.
 from add_dynamic import dynamic_sessions
 from .models import Membership  # Import the Membership model
-# Import your AddMembershipForm from forms.py
+
 from .forms import AddMembershipForm
 from app import app, db  # Update with your Flask app instance and db object
 from flask import render_template, redirect, url_for, flash
@@ -104,7 +104,7 @@ def require_role(role):
     return decorator
 
 
-# ************************* Admin View ******************************************
+# ************************* Admin View Database Model******************************************
 # Disabled For Submission.
 admin.add_view(ModelView(UserAccount, db.session))
 admin.add_view(ModelView(Role, db.session))
@@ -169,6 +169,7 @@ def load_user(user_id):
 #   elif request.method == 'GET':
 #     return render_template('contact_us.html', form=form)
 # ***********************************************************************************************************************
+# **************************** HomePage *************************************************
 @app.route('/', methods=['GET', 'POST'])
 def Homepage():
     form = ContactUsForm()
@@ -177,8 +178,7 @@ def Homepage():
             flash('All fields are required.')
             return render_template('homepage.html', form=form)
         else:
-            # Send email to the website owner (recipient)
-            # Replace with the recipient's email address
+            
             recipient_email = 'skrgtm2059@gmail.com'
             subject = 'New Contact Form Submission'
             body = f'Name: {form.name.data}\nEmail: {form.email.data}\nMessage: {form.message.data}'
@@ -200,7 +200,7 @@ def Homepage():
         return render_template('homepage.html', title='HomePage', form=form)
 # ************************************************************************************************************
 # Getter to get the information of upcoming activites using facility id.
-
+#  provides functionality to retrieve information about upcoming activities associated with a particular facility.
 
 @app.route('/facility/<int:facility_id>/activities')
 def get_upcomming_activities(facility_id):
@@ -270,6 +270,13 @@ def signup():
         if user_e is not None:
             flash('Email ID already exists', 'email_exists')
             app.logger.error('Error: Create Account Failed')
+            return redirect('/create_account')
+
+        # Check if the phone number is exactly 10 digits long
+        if len(user_number) != 10:
+            flash(
+                'Invalid phone number. Phone number must be 10 digits long.', 'invalid_phone')
+            app.logger.error('Error: Invalid phone number')
             return redirect('/create_account')
 
         # Check if the phone number already exists
@@ -406,7 +413,7 @@ def send_verification_email():
     # flash('A verification email has been sent to your email address.')
     return redirect(url_for('login'))
 
-
+# *******************  Verification email token ****************************************
 @app.route('/verify-email/<token>')
 def verify_email(token):
     # Find the user with the given verification token
@@ -443,7 +450,9 @@ def reset():
 
         if user:
             # Generate a token that is valid for 1 hour
+            # uses the Serializer class from the Flask itsdangerous module to generate a token.
             s = Serializer(current_app.config['SECRET_KEY'])
+            # called to serialize the data (user email) and generate a token.
             token = s.dumps(user_email, salt='recover-key')
 
             # Construct the password reset link
@@ -609,12 +618,20 @@ def order_products():
         # 'Authorization': 'key b42caed1ffbd4202b41b700a32e3a237',
         # my key
         'Authorization': 'key 7bc5b52469534542a259bf2e23d17a20',
+
+        # admin live key
+        # 'Authorization': 'key live_secret_key_f8005ada418748a68dd9450717208585',
+
         'Content-Type': 'application/json',
     }
 
     # Send the request to Khalti's API
     response = requests.post(
         "https://a.khalti.com/api/v2/epayment/initiate/", headers=headers, data=payload)
+
+    # response = requests.post(
+    #     "https://khalti.com/api/v2/epayment/initiate/", headers=headers, data=payload)
+
     print(response.text)
     if response.status_code == 200:
         # If the response is successful, get the payment URL and redirect the user to it
@@ -625,8 +642,6 @@ def order_products():
         # If there was an error, log it and return a JSON response with the error
         app.logger.error(f"Failed to initiate payment: {response.text}")
         return jsonify({'error': 'Payment initiation failed', 'message': response.text}), response.status_code
-
-
 
 
 # khalti payment success
@@ -837,25 +852,25 @@ def payment_success():
 plans = {
     'monthly': {
         'name': 'Club Membership',
-        'price_id': 150,
+        'price_id': 10,
         'interval': 'month',
         'currency': 'Rs'
     },
     '3_months': {
         'name': 'Gym Membership',
-        'price_id': 300,
+        'price_id': 10,
         'interval': '3 months',
         'currency': 'Rs'
     },
     '6_months': {
         'name': 'Club Membership',
-        'price_id': 350,
+        'price_id': 10,
         'interval': '6 months',
         'currency': 'Rs'
     },
     'yearly': {
         'name': 'Club Membership',
-        'price_id': 500,
+        'price_id': 10,
         'interval': 'year',
         'currency': 'Rs'
     },
@@ -953,8 +968,8 @@ def order_subscription(username):
             # return_url = url_for('subscription_success',
             #                      _external=True) + f"?membership_type={plan_id}"
 
-            return_url = url_for('subscription_success', _external=True) + f"?membership_type={plan_id}&payment_type=subscription"
-
+            return_url = url_for('subscription_success', _external=True) + \
+                f"?membership_type={plan_id}&payment_type=subscription"
 
             print("Plan ID:", plan_id)
 
@@ -977,11 +992,17 @@ def order_subscription(username):
                 # 'Authorization': 'key b42caed1ffbd4202b41b700a32e3a237',
                 # my key
                 'Authorization': 'key 7bc5b52469534542a259bf2e23d17a20',
+
+                 # admin live key
+                # 'Authorization': 'key live_secret_key_f8005ada418748a68dd9450717208585',
                 'Content-Type': 'application/json',
             }
 
             response = requests.post(
                 "https://a.khalti.com/api/v2/epayment/initiate/", headers=headers, data=payload)
+
+            # response = requests.post(
+            #     "https://khalti.com/api/v2/epayment/initiate/", headers=headers, data=payload)
 
             if response.status_code == 200:
                 response_data = response.json()
@@ -992,7 +1013,6 @@ def order_subscription(username):
                 return jsonify({'error': 'Payment initiation failed', 'message': response.text}), response.status_code
 
     return render_template('all_subscriptions.html', username=username, plans=plans, current_user=user, memberships=memberships, User=current_user)
-
 
 
 # # Route to display all membership types
@@ -1450,6 +1470,7 @@ def add_membership():
 
 
 # Route to view all membership types
+# membership type is added by manager
 @app.route('/mgr_edit_membership')
 def view_memberships():
     memberships = Membership.query.all()
@@ -1539,70 +1560,70 @@ def look_bookings():
             flash('User not found', 'danger')
     return render_template('view_bookingsEmp.html', bookings=bookings, form=form, form_submitted=form_submitted, User=current_user)
 
-
+# **********************************************************************************************************
 # Route which handle booking modification
 # The booking id is taken in as a parameter.
 
-@app.route('/edit_booking/<int:booking_id>', methods=['GET', 'POST'])
-@require_role(role="Employee")
-@login_required
-def edit_booking(booking_id):
-    booking = Booking.query.get(booking_id)
-    print(booking)  # Get the booking by its ID
+# @app.route('/edit_booking/<int:booking_id>', methods=['GET', 'POST'])
+# @require_role(role="Employee")
+# @login_required
+# def edit_booking(booking_id):
+#     booking = Booking.query.get(booking_id)
+#     print(booking)  # Get the booking by its ID
 
-    if not booking:
-        flash('Booking not found', 'danger')
-        return redirect(url_for('look_bookings'))
+#     if not booking:
+#         flash('Booking not found', 'danger')
+#         return redirect(url_for('look_bookings'))
 
-    if booking.Status != "Booked":
-        flash('Booking cannot be edited because it has already occurred', 'danger')
-        return redirect(url_for('look_bookings'))
+#     if booking.Status != "Booked":
+#         flash('Booking cannot be edited because it has already occurred', 'danger')
+#         return redirect(url_for('look_bookings'))
 
-    form = EditBookingForm(obj=booking)
+#     form = EditBookingForm(obj=booking)
 
-    if request.method == 'POST' and form.validate_on_submit():
-        if form.cancel.data:  # Check if the cancel button was clicked
-            booking_sessionFilter = Sessions.query.filter_by(
-                Start_time=form.start_time.data, End_time=form.end_time.data).first()
-            print(booking_sessionFilter)
-            booking_filter = Booking.query.filter_by(
-                Book_Time=form.date.data, session=booking_sessionFilter.id).first()
-            if not booking_filter and booking_sessionFilter:
-                flash('No Booking Found to Cancel.')
-            else:
-                booking.Status = "Cancelled"
-                booking.session.Remaining_Cap += booking.Size  # Increase the remaining capacity
-                flash('Booking cancelled successfully', 'success')
-        else:
-            old_session = booking.session
-            new_session = Sessions.query.filter_by(
-                Date=form.date.data, Start_time=form.start_time.data, End_time=form.end_time.data).first()
-            print(new_session)
+#     if request.method == 'POST' and form.validate_on_submit():
+#         if form.cancel.data:  # Check if the cancel button was clicked
+#             booking_sessionFilter = Sessions.query.filter_by(
+#                 Start_time=form.start_time.data, End_time=form.end_time.data).first()
+#             print(booking_sessionFilter)
+#             booking_filter = Booking.query.filter_by(
+#                 Book_Time=form.date.data, session=booking_sessionFilter.id).first()
+#             if not booking_filter and booking_sessionFilter:
+#                 flash('No Booking Found to Cancel.')
+#             else:
+#                 booking.Status = "Cancelled"
+#                 booking.session.Remaining_Cap += booking.Size  # Increase the remaining capacity
+#                 flash('Booking cancelled successfully', 'success')
+#         else:
+#             old_session = booking.session
+#             new_session = Sessions.query.filter_by(
+#                 Date=form.date.data, Start_time=form.start_time.data, End_time=form.end_time.data).first()
+#             print(new_session)
 
-            if not new_session:
-                flash('No session found for the new date and time', 'danger')
-                return render_template('edit_booking.html', form=form, booking_id=booking_id)
+#             if not new_session:
+#                 flash('No session found for the new date and time', 'danger')
+#                 return render_template('edit_booking.html', form=form, booking_id=booking_id)
 
-            if new_session.Remaining_Cap < booking.Size:
-                flash('Not enough capacity for the new session', 'danger')
-                return render_template('edit_booking.html', form=form, booking_id=booking_id)
+#             if new_session.Remaining_Cap < booking.Size:
+#                 flash('Not enough capacity for the new session', 'danger')
+#                 return render_template('edit_booking.html', form=form, booking_id=booking_id)
 
-            # Update the remaining capacities
-            old_session.Remaining_Cap += booking.Size
-            new_session.Remaining_Cap -= booking.Size
+#             # Update the remaining capacities
+#             old_session.Remaining_Cap += booking.Size
+#             new_session.Remaining_Cap -= booking.Size
 
-            # Update the booking
-            booking.session_id = new_session.id
-            booking.session = new_session
-            db.session.add(old_session)
-            db.session.add(new_session)
-            flash('Booking updated successfully', 'success')
+#             # Update the booking
+#             booking.session_id = new_session.id
+#             booking.session = new_session
+#             db.session.add(old_session)
+#             db.session.add(new_session)
+#             flash('Booking updated successfully', 'success')
 
-        db.session.commit()
-        return redirect(url_for('look_bookings'))
+#         db.session.commit()
+#         return redirect(url_for('look_bookings'))
 
-    return render_template('edit_booking.html', form=form, booking_id=booking_id, booking=booking)
-
+#     return render_template('edit_booking.html', form=form, booking_id=booking_id, booking=booking)
+# ********************************************************************************************************************
 
 # Route that takes in the user account to check membership information
 # Only allows member details to be accessed if the account is a User account
@@ -1851,7 +1872,7 @@ def empcheckout_page():
         print("form error")
 
     return render_template('empcheckout_page.html', data=aggregated_data, form=form, form1=form1, discount_amount=discount_amount, final_amount=final_amount)
-
+# ********************************************************************************************************************
 
 # Getter that displays activity id and activity name for a given facility
 # requires facility id as a parameter
@@ -1872,14 +1893,17 @@ def get_activities_createBooking(facility_id):
 def load_user(id):
     return UserAccount.query.get(int(id))
 
-
+# **************************************************************************************************************************
 # ****************************************** User: After Login ******************************************************
-# Route to allow users to select the activity , Facility ,Date and party size to
+# Route to allow users to select the activity , Facility ,Date and group size to search for available sessions
 @app.route('/lookup_venue', methods=['POST', 'GET'])
 @login_required
 @require_role(role="User")
 def view_venue():
+    # Create an instance of the FacilityActivityForm
     form = FacilityActivityForm()
+
+     # Populate form fields with choices obtained from the database
 
     form.facility_name.choices = [(facility.id, facility.Name)
                                   for facility in Facility.query.all()]
@@ -1890,15 +1914,20 @@ def view_venue():
     all_activities = Activity.query.all()
     # form.activity_name.choices = [(a.Activity_Name, a.Activity_Name) for a in all_activities]
 
+    # Initialize variables for storing available sessions and activities
     available_sessions = []
     activities = Activity.query.all()
     activities_dict = [activity.activity_to_dict() for activity in activities]
 
+    # Handle form submission and validation
     if form.validate_on_submit():
+        # Retrieve form data
         facility_id = int(form.facility_name.data)
         venue = Facility.query.get(facility_id)
         activity_id = Activity.query.filter_by(
             id=form.activity_name.data).first()
+        
+        # Query database to find available sessions for selected activity at chosen facility
         venue_activity = Activity.query.filter_by(
             Activity_Name=activity_id.Activity_Name, facility_id=venue.id).first()
         if venue_activity:  # Check if venue_activity is not None
@@ -1963,7 +1992,7 @@ def view_sessions():
 
     return render_template('sessions.html', sessions=sessions_with_data, group_size=group_size, activity_price=activity_price, User=current_user)
 
-
+# route when user clicks book session button in the available session age
 @app.route('/book_session', methods=['POST'])
 @login_required
 # @require_role(role="User")
@@ -2062,7 +2091,7 @@ def delete_expired_booking():
 # Requires booking id
 # Does not allow users to cancel bookings thaat were not made by them, Returning a 403 status code if the user tries to do so
 # Else the booking is cancelled, The session remaining capacity is updated accordingly and success message is displayed
-
+# delete icon for checkout page
 
 @app.route('/delete_booking/<int:booking_id>', methods=['GET', 'POST'])
 @login_required
@@ -2295,10 +2324,10 @@ def update_user():
 # Route to display user information
 
 
-@app.route('/user_information')
-@login_required
-def user_information():
-    return render_template('user_information.html', title='User Account')
+# @app.route('/user_information')
+# @login_required
+# def user_information():
+#     return render_template('user_information.html', title='User Account')
 
 
 # ************************************ End of User Information ********************************************
