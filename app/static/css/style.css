@@ -485,7 +485,7 @@ footer::before {
 
 .loader {
   /* Use the background image property to display the loading GIF */
-  background-image: url('../static/images/load.gif');
+  background-image: url("../static/images/load.gif");
   background-size: cover; /* Adjust as needed */
 }
 
