@@ -686,7 +686,7 @@ def payment_success():
 
     db.session.commit()
     flash('Payment successful! "Booked" Please check e-mail for booking receipt')
-# ***********************************************************************
+
     # Central Billing Monitoring System API
     # Making a call to the CBMS API after a successful payment
     cbms_api_url = "https://cbapi.ird.gov.np/api/bill"
