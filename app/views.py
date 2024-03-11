@@ -116,7 +116,7 @@ admin.add_view(ModelView(Receipt, db.session))
 admin.add_view(ModelView(Membership, db.session))
 # *******************************************************************************
 
-# decorator used to reload the user object
+# decorator used to reload the user object from database when needed
 
 
 @login_manager.user_loader
@@ -293,7 +293,7 @@ def signup():
             app.logger.error('Error: Passwords do not match')
             return redirect('/create_account')
 
-        # If all checks pass, create the user account
+        # If all checks pass, create the user account(object)
         userData = UserAccount(User=user_name, Email=user_email,
                                Password=user_password, Mobile=form.CountryCode.data + user_number)
         userData.roles.append(user_Role)
@@ -598,7 +598,7 @@ def order_products():
         # "return_url": "http://localhost:5000/payment_success",
 
         "return_url": url_for('payment_success', _external=True),
-        "website_url": "http://localhost:5000",  # Your website's URL
+        "website_url": "http://localhost:5000",  #  website's URL
         "amount": total_amount_paisa,  # The amount in paisa
         "purchase_order_id": "Order01",  # Unique ID for the order
         "purchase_order_name": "test",  # Name or description of the order
@@ -1096,8 +1096,8 @@ def success():
                 db.session.commit()
 
     return redirect(url_for('user'))
-
-# Route that handles the refund requests
+# *******************************************************************************************************
+# Route that handles the dispute requests
 # Sends the acknowledgement to the user via email if the data entered is valid.
 
 
@@ -1777,7 +1777,7 @@ def booking_details():
     return render_template('booking_details.html', form=form, sessions=sessions, data=data, group_size=group_size, activity_price=activity_price, activity_id=activity_id, user_id=user_id)
 
 # **********************************************************************************************
-
+# ****************************************************************************************************
 # Gets all the information from the route above and displays all the possible sessions.
 
 
@@ -1951,7 +1951,7 @@ def view_venue():
                     query = query.filter(
                         Sessions.Start_time >= venue.Start_Facility)
 
-                print(f"Query: {query}")  # Debug print
+                print(f"Query: {query}") 
                 query_result = query.all()
                 print(f"Query result: {query_result}")  # Debug print
 
